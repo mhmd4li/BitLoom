@@ -1,12 +1,19 @@
 # 🧶 BitLoom
 
-BitLoom is a Python-based open-source utility designed to **export static analysis and quality metrics** into **human-readable reports** — PDF, Word, and Excel.
+**BitLoom** weaves together static code analysis metrics into exportable, human-readable reports.  
+Generate clean **PDF, Word, or Excel** documents from **SonarQube** results — ideal for audits, compliance reviews, or management reporting.
 
-### ⚙️ Features (Planned)
-- SonarQube API integration
-- Export to PDF / DOCX / XLSX
-- CLI tool for automation in CI/CD
-- Custom report templates
+### ✨ Features
+- Export **SonarQube project metrics** to PDF, DOCX, or XLSX
+- Customizable report templates
+- Supports **multiple projects & branches**
+- Built with **Python 3**, powered by **requests**, **fpdf**, and **pandas**
+- CLI support for automation in DevOps pipelines
+
+### 🧰 Stack
+- **Language:** Python 3  
+- **Libraries:** FPDF / python-docx / pandas / openpyxl  
+- **DevOps:** Azure Pipelines, Docker, SonarQube API integration  
 
 ### 🚀 Quick Start
 ```bash

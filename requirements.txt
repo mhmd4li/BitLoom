@@ -1,5 +1,28 @@
-fpdf2
-pandas
-openpyxl
-python-docx
-requests
+# -----------------------------
+# Core dependencies
+# -----------------------------
+requests>=2.31.0          # For SonarQube API calls
+pandas>=2.1.1             # For tabular data handling
+matplotlib>=3.8.0         # For charts (pie/bar visuals)
+xlsxwriter>=3.1.2         # For Excel report formatting and charting
+python-docx>=1.1.0        # For generating Word reports
+openpyxl>=3.1.2           # Excel engine for pandas compatibility
+
+# -----------------------------
+# CLI / Utility dependencies
+# -----------------------------
+colorama>=0.4.6           # For colorful CLI output (optional but nice)
+tqdm>=4.66.1              # For progress bars in future CLI improvements
+
+# -----------------------------
+# Packaging & Distribution
+# -----------------------------
+setuptools>=68.2.2
+wheel>=0.41.2
+twine>=4.0.2
+
+# -----------------------------
+# Development / Optional
+# -----------------------------
+pytest>=7.4.2             # Unit testing (optional)
+black>=23.9.1             # Code formatting (optional)

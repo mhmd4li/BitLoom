@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68.2.2", "wheel>=0.41.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bitloom"
+version = "0.2.0"
+description = "BitLoom — a Python-based open-source utility for exporting SonarQube analysis and quality metrics into professional Word, Excel, and CSV reports."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+authors = [
+    { name = "Mohamed Ali", email = "mhmd4li.dev@gmail.com" }
+]
+
+keywords = [
+    "sonarqube",
+    "report",
+    "code-quality",
+    "excel",
+    "word",
+    "csv",
+    "automation",
+    "devops",
+    "bitloom"
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Utilities",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+]
+
+dependencies = [
+    "requests>=2.31.0",
+    "pandas>=2.1.1",
+    "matplotlib>=3.8.0",
+    "xlsxwriter>=3.1.2",
+    "python-docx>=1.1.0",
+    "openpyxl>=3.1.2",
+]
+
+optional-dependencies = { 
+    dev = ["pytest>=7.4.2", "black>=23.9.1", "tqdm>=4.66.1", "colorama>=0.4.6"]
+}
+
+[project.urls]
+Homepage = "https://github.com/mhmd4li/BitLoom"
+Documentation = "https://github.com/mhmd4li/BitLoom#readme"
+Repository = "https://github.com/mhmd4li/BitLoom"
+Issues = "https://github.com/mhmd4li/BitLoom/issues"
+
+[project.scripts]
+bitloom = "bitloom.main:main"

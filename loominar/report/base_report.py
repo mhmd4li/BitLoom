@@ -33,9 +33,14 @@ class BaseReport:
     def _build_filename(self, status=None):
         timestamp = datetime.now().strftime("%Y-%m-%d_%H%M")
         status_part = f"_{status.upper()}" if status else "_Report"
+        fmt_norm = str(self.format).lower()
+        if fmt_norm == "excel":
+            ext = "xlsx"
+        else:
+            ext = fmt_norm
         return os.path.join(
             self.output_dir,
-            f"{self.project_key}_Report_{timestamp}.{self.format}"
+            f"{self.project_key}{status_part}_{timestamp}.{ext}"
         )
     
 #----------------------------------

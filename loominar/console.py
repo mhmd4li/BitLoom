@@ -18,10 +18,10 @@ def error(msg: str, *, bold: bool = True) -> None:
     prefix = _BOLD if bold else ""
     print(f"{prefix}{Fore.RED}{msg}{_RESET}")
 
-def info(msg: str, *, bold: bool = False) -> None:
+def info(msg: str, *, bold: bool = False, flush: bool = False) -> None:
     """Cyan informational message (for status)."""
     prefix = _BOLD if bold else ""
-    print(f"{prefix}{Fore.CYAN}{msg}{_RESET}")
+    print(f"{prefix}{Fore.CYAN}{msg}{_RESET}", flush=flush)
 
 def warn(msg: str, *, bold: bool = False) -> None:
     """Yellow-ish warning (falls back to bright yellow)."""

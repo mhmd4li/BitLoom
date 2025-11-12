@@ -1,10 +1,11 @@
 import pandas as pd
 from .base_report import BaseReport, SEVERITY_MAP, SEVERITY_COLORS
+import console as c
 
 class ExcelReport(BaseReport):
     def generate(self, issues, quality_gate):
         if not issues:
-            print("ℹ️ No issues found. Skipping Excel export.")
+            c.info("ℹ️ No issues found. Skipping Excel export.")
             return
 
         status = quality_gate.get("status", "Report")
@@ -78,7 +79,7 @@ class ExcelReport(BaseReport):
             metadata_ws.set_column("A:A", 18, header_fmt)
             metadata_ws.set_column("B:B", 50)
 
-        print(f"✅ Excel report saved: {filename}")
+        c.success(f"✅ Excel report saved: {filename}")
 
 
 # loominar/report/excel_report.py

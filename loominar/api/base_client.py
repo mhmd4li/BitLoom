@@ -1,6 +1,7 @@
 import requests
 import sys
 import time
+import console as c
 
 class BaseClient:
     def __init__(self, base_url, token, verbosity=2):
@@ -10,7 +11,7 @@ class BaseClient:
 
     def _log(self, message, level=2):
         if self.verbosity >= level:
-            print(message, flush=True)
+            c.info(message, flush=True)
 
     def get(self, endpoint, params=None):
         if not endpoint.startswith("/"):
@@ -20,10 +21,10 @@ class BaseClient:
         for attempt in range(3):
             try:
                 if self.verbosity >= 3:
-                    print(f"[DEBUG] GET {url} params={params}")
+                    c.info(f"[DEBUG] GET {url} params={params}")
                 resp = requests.get(url, params=params, auth=self.auth, timeout=15)
                 if self.verbosity >= 3:
-                    print(f"[DEBUG] → {resp.status_code}, {len(resp.text)} bytes")
+                    c.info(f"[DEBUG] → {resp.status_code}, {len(resp.text)} bytes")
                 resp.raise_for_status()
                 return resp.json()
             except Exception as e:

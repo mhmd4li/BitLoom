@@ -1,57 +1,37 @@
 import os
 
-def get_user_inputs():
-    """
-    Collects and validates basic user inputs required for SonarQube report generation.
-    Returns a dictionary of configuration parameters.
-    """
+def get_user_inputs(cli_defaults=None):
+    if cli_defaults is None:
+        cli_defaults = {}
 
-    print("🧶 Loominar — SonarQube Report Exporter\n")
+    def get_value(prompt_text, key, default=None):
+        if cli_defaults.get(key):
+            return cli_defaults[key]
+        value = input(prompt_text).strip()
+        return value or default
 
-    sonar_url = input("Enter SonarQube server URL (e.g., http://localhost:9000): ").strip()
-    if not sonar_url:
-        raise ValueError("SonarQube URL cannot be empty.")
+    # Gather inputs
+    sonar_url = get_value("Enter SonarQube server URL (e.g., http://localhost:9000): ", "url")
+    sonar_token = get_value("Enter SonarQube API token: ", "token")
+    project_key = get_value("Enter SonarQube project key: ", "project")
 
-    sonar_token = input("Enter SonarQube API token: ").strip()
-    if not sonar_token:
-        raise ValueError("SonarQube API token cannot be empty.")
+    output_format = get_value("Enter output format (word / excel / csv): ", "format", "excel").lower()
+    verbosity = int(cli_defaults.get("verbosity", 2))
 
-    project_key = input("Enter SonarQube project key: ").strip()
-    if not project_key:
-        raise ValueError("Project key cannot be empty.")
-
-    fmt = input("Enter output format (word / excel / csv): ").strip().lower()
-    if fmt not in ["word", "excel", "csv"]:
-        raise ValueError("Invalid format. Must be 'word', 'excel', or 'csv'.")
-
+    # Default output dir → Documents/Loominar
     user_documents = os.path.join(os.path.expanduser("~"), "Documents")
-    default_dir = os.path.join(user_documents, "Loominar", cfg["project_key"]) # User Documents folder
-    output_dir = input(f"Enter output directory (leave blank for {default_dir}): ").strip()
-    if not output_dir:
-        output_dir = default_dir
+    default_dir = os.path.join(user_documents, "Loominar")
+
+    output_dir = get_value(f"Enter output directory (leave blank for {default_dir}): ", "output", default_dir)
     os.makedirs(output_dir, exist_ok=True)
-    print(f"📁 Reports will be saved to: {output_dir}")
 
-    verbosity = input("Select verbosity level (1=Low, 2=Medium, 3=High): ").strip()
-    verbosity = int(verbosity) if verbosity.isdigit() and 1 <= int(verbosity) <= 3 else 2
-
-    config = {
+    return {
         "sonar_url": sonar_url,
         "sonar_token": sonar_token,
         "project_key": project_key,
+        "format": output_format,
+        "verbosity": verbosity,
         "output_dir": output_dir,
-        "format": fmt,
-        "verbosity": verbosity
+        "no_confirm": cli_defaults.get("no_confirm", False),
     }
 
-    return config
-
-
-if __name__ == "__main__":
-    cfg = get_user_inputs()
-    print("\n✅ Configuration Loaded:")
-    for k, v in cfg.items():
-        if k == "sonar_token":
-            print(f"  {k}: {'*' * 8}")  # mask token
-        else:
-            print(f"  {k}: {v}")

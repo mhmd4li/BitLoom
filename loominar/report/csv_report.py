@@ -1,10 +1,11 @@
 import pandas as pd
 from .base_report import BaseReport, SEVERITY_MAP
+import console as c
 
 class CsvReport(BaseReport):
     def generate(self, issues, quality_gate):
         if not issues:
-            print("ℹ️ No issues found. Skipping CSV export.")
+            c.info("ℹ️ No issues found. Skipping CSV export.")
             return
 
         status = quality_gate.get("status", "Report")
@@ -20,7 +21,7 @@ class CsvReport(BaseReport):
         ])
         filename = self._build_filename(status)
         df.to_csv(filename, index=False)
-        print(f"✅ CSV report saved: {filename}")
+        c.success(f"✅ CSV report saved: {filename}")
 
 # loominar/report/csv_report.py
 # Simple, dependency-light export

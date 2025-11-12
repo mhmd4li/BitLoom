@@ -11,7 +11,7 @@ openpyxl>=3.1.2           # Excel engine for pandas compatibility
 # -----------------------------
 # CLI / Utility dependencies
 # -----------------------------
-colorama>=0.4.6           # For colorful CLI output (optional but nice)
+colorama>=0.4.6           # For colorful CLI output
 tqdm>=4.66.1              # For progress bars in future CLI improvements
 
 # -----------------------------

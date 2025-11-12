@@ -4,6 +4,7 @@ from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml.shared import OxmlElement, qn
 from datetime import datetime
 from .base_report import BaseReport, SEVERITY_MAP, SEVERITY_COLORS
+import console as c
 
 class WordReport(BaseReport):
     def generate(self, metrics, quality_gate, issues):
@@ -74,7 +75,7 @@ class WordReport(BaseReport):
 
         path = self._build_filename(status)
         doc.save(path)
-        print(f"✅ Word report saved: {path}")
+        c.success(f"✅ Word report saved: {path}")
 
 
 

@@ -1,6 +1,7 @@
 from .word_report import WordReport
 from .excel_report import ExcelReport
 from .csv_report import CsvReport
+import console as c
 
 class ReportManager:
     def __init__(self, output_dir, project_key, fmt):
@@ -16,7 +17,7 @@ class ReportManager:
         elif self.format == "csv":
             CsvReport(self.output_dir, self.project_key, self.format).generate(issues, qg)
         else:
-            print("❌ Unsupported format. Choose: word / excel / csv")
+            c.warn("❌ Unsupported format. Choose: word / excel / csv")
 
 # loominar/report/report_manager.py
 # A clean orchestrator to pick the correct report generator dynamically

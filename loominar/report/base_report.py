@@ -36,8 +36,10 @@ class BaseReport:
         fmt_norm = str(self.format).lower()
         if fmt_norm == "excel":
             ext = "xlsx"
-        else:
-            ext = fmt_norm
+        elif fmt_norm == "word":
+            ext = "docx"
+        elif fmt_norm == "csv":
+            ext = "csv"
         return os.path.join(
             self.output_dir,
             f"{self.project_key}{status_part}_{timestamp}.{ext}"

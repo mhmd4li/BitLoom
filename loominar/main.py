@@ -25,7 +25,7 @@ def main():
         c.info("📡 Fetching SonarQube data...", bold=True)
         metrics = metrics_api.get_metrics(cfg["project_key"])
         qg = metrics_api.get_quality_gate(cfg["project_key"])
-        issues, fmt = issues_api.get_all_issues(cfg["project_key"], cfg["format"])
+        issues, fmt = issues_api.get_all_issues(cfg["project_key"], cfg["format"], cfg["no_confirm"])
 
         # Step 5: Confirm before report generation (unless --no-confirm)
         if not cfg.get("no_confirm"):

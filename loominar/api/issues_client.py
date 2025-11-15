@@ -8,7 +8,7 @@ SEVERITIES = ["BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"]
 TYPES = ["BUG", "VULNERABILITY", "CODE_SMELL"]
 
 class IssuesClient(BaseClient):
-    def get_all_issues(self, project_key, fmt):
+    def get_all_issues(self, project_key, fmt, no_cnfrm):
         all_issues = []
 
         def fetch_segment(filters, prefix=""):
@@ -44,13 +44,18 @@ class IssuesClient(BaseClient):
         total = first.get("paging", {}).get("total", 0)
         self._log(f"📊 Total reported issues: {total}", 2)
 
-        # Warn for Word
-        if fmt == "word" and total > MAX_RESULTS:
-            self._log("\n⚠️  WARNING: More than 10,000 issues found.", 1)
-            choice = input("   Continue with Word export? (y/n): ").strip().lower()
-            if choice != "y":
+        # Handle large datasets based on execution mode: prompt in interactive mode, auto-switch to Excel in CLI mode.
+        if no_cnfrm == False:
+            if fmt == "word" and total > MAX_RESULTS:
+                self._log("\n⚠️  WARNING: More than 10,000 issues found.", 1)
+                choice = input("   Continue with Word export? (y/n): ").strip().lower()
+                if choice != "y":
+                    fmt = "excel"
+                    self._log("   ✅ Switched to Excel export.", 1)
+        else:
+            if fmt == "word" and total > MAX_RESULTS:
+                self._log("\n⚠️  WARNING: Issue count exceeds 10,000. For reliability, the report will be generated in Excel format instead.", 1)
                 fmt = "excel"
-                self._log("   ✅ Switched to Excel export.", 1)
 
         if total <= MAX_RESULTS:
             all_issues.extend(fetch_segment({

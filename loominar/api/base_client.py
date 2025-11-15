@@ -11,7 +11,12 @@ class BaseClient:
 
     def _log(self, message, level=2):
         if self.verbosity >= level:
-            c.info(message, flush=True)
+            if level == 0:
+                c.info(message, flush=True)
+            elif level == 1:
+                c.warn(message, flush=True)
+            else:
+                c.error(message, flush=True)
 
     def get(self, endpoint, params=None):
         if not endpoint.startswith("/"):

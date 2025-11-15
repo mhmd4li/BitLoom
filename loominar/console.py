@@ -13,20 +13,20 @@ def success(msg: str, *, bold: bool = True) -> None:
     prefix = _BOLD if bold else ""
     print(f"{prefix}{Fore.GREEN}{msg}{_RESET}")
 
-def error(msg: str, *, bold: bool = True) -> None:
+def error(msg: str, *, bold: bool = True, flush: bool = False) -> None:
     """Red error message."""
     prefix = _BOLD if bold else ""
-    print(f"{prefix}{Fore.RED}{msg}{_RESET}")
+    print(f"{prefix}{Fore.RED}{msg}{_RESET}", flush=flush)
 
 def info(msg: str, *, bold: bool = False, flush: bool = False) -> None:
     """Cyan informational message (for status)."""
     prefix = _BOLD if bold else ""
     print(f"{prefix}{Fore.CYAN}{msg}{_RESET}", flush=flush)
 
-def warn(msg: str, *, bold: bool = False) -> None:
+def warn(msg: str, *, bold: bool = False, flush: bool = False) -> None:
     """Yellow-ish warning (falls back to bright yellow)."""
     prefix = _BOLD if bold else ""
-    print(f"{prefix}{Fore.YELLOW}{msg}{_RESET}")
+    print(f"{prefix}{Fore.YELLOW}{msg}{_RESET}", flush=flush)
 
 def prompt(msg: str, *, bold: bool = False) -> None:
     """Cyan prompt (non-blocking print) — still use input() for reading."""

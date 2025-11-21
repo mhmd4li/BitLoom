@@ -1,7 +1,7 @@
 from .word_report import WordReport
 from .excel_report import ExcelReport
 from .csv_report import CsvReport
-import console as c
+from loominar import console as c
 
 class ReportManager:
     def __init__(self, output_dir, project_key, fmt):

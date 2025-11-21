@@ -22,13 +22,14 @@ def main():
         issues_api = IssuesClient(cfg["sonar_url"], cfg["sonar_token"], verbosity=cfg["verbosity"])
 
         # Step 4: Fetch data
+        #Introduced new variable setdefault for 10k confirmation
         c.info("📡 Fetching SonarQube data...", bold=True)
         metrics = metrics_api.get_metrics(cfg["project_key"])
         qg = metrics_api.get_quality_gate(cfg["project_key"])
-        issues, fmt = issues_api.get_all_issues(cfg["project_key"], cfg["format"], cfg["no_confirm"])
+        issues, fmt = issues_api.get_all_issues(cfg["project_key"], cfg["format"], cfg["no_confirm"], cfg["large_warn"])
 
         # Step 5: Confirm before report generation (unless --no-confirm)
-        if not cfg.get("no_confirm"):
+        if not cfg.get("no_confirm") and not cfg.get("large_warn"):
             c.prompt(f"\nProceed to generate {fmt.upper()} report? (Y/n): ", bold=True)
             confirm = input().strip().lower()
             if confirm == "n":

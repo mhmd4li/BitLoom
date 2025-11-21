@@ -33,5 +33,6 @@ def get_user_inputs(cli_defaults=None):
         "verbosity": verbosity,
         "output_dir": output_dir,
         "no_confirm": cli_defaults.get("no_confirm", False),
+        "large_warn": cli_defaults.get("large_warn", False)
     }
 

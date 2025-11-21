@@ -8,7 +8,7 @@ SEVERITIES = ["BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"]
 TYPES = ["BUG", "VULNERABILITY", "CODE_SMELL"]
 
 class IssuesClient(BaseClient):
-    def get_all_issues(self, project_key, fmt, no_cnfrm):
+    def get_all_issues(self, project_key, fmt, no_cnfrm, large_warn = False):
         all_issues = []
 
         def fetch_segment(filters, prefix=""):
@@ -49,6 +49,7 @@ class IssuesClient(BaseClient):
             if fmt == "word" and total > MAX_RESULTS:
                 self._log("\n⚠️  WARNING: More than 10,000 issues found.", 1, 2)
                 choice = input("   Continue with Word export? (y/n): ").strip().lower()
+                large_warn = True
                 if choice != "y":
                     fmt = "excel"
                     self._log("   ✅ Switched to Excel export.", 1, 1)
@@ -62,7 +63,7 @@ class IssuesClient(BaseClient):
                 "componentKeys": project_key,
                 "statuses": "OPEN,CONFIRMED"
             }, prefix="ALL"))
-            return all_issues, fmt
+            return all_issues, fmt, large_warn
 
         # Split by severity/type
         self._log("⚙️  Splitting by severity/type due to large dataset...", 2, 1)
@@ -86,7 +87,7 @@ class IssuesClient(BaseClient):
 
         unique = {i["key"]: i for i in all_issues}
         self._log(f"\n✅ Total unique issues fetched: {len(unique)}", 1, 1)
-        return list(unique.values()), fmt
+        return list(unique.values()), fmt, large_warn
     
 
 # loominar/api/issues_client.py

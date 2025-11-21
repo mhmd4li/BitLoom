@@ -1,6 +1,6 @@
 import pandas as pd
 from .base_report import BaseReport, SEVERITY_MAP, SEVERITY_COLORS
-import console as c
+from loominar import console as c
 
 class ExcelReport(BaseReport):
     def generate(self, issues, quality_gate):

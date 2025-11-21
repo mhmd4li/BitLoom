@@ -1,7 +1,7 @@
 import requests
 import sys
 import time
-import console as c
+from loominar import console as c
 
 class BaseClient:
     def __init__(self, base_url, token, verbosity=2):

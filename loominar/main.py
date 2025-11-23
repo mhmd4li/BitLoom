@@ -26,9 +26,13 @@ def main():
         c.info("📡 Fetching SonarQube data...", bold=True)
         metrics = metrics_api.get_metrics(cfg["project_key"])
         qg = metrics_api.get_quality_gate(cfg["project_key"])
-        issues, fmt = issues_api.get_all_issues(cfg["project_key"], cfg["format"], cfg["no_confirm"], cfg["large_warn"])
 
-        # Step 5: Confirm before report generation (unless --no-confirm)
+        # Pass output_dir to get_all_issues and capture streamed CSVs
+        issues, fmt, large_warn, streamed_csvs = issues_api.get_all_issues(
+            cfg["project_key"], cfg["format"], cfg["no_confirm"], cfg["output_dir"], cfg.get("large_warn", False)
+        )
+        cfg["large_warn"] = large_warn
+
         if not cfg.get("no_confirm") and not cfg.get("large_warn"):
             c.prompt(f"\nProceed to generate {fmt.upper()} report? (Y/n): ", bold=True)
             confirm = input().strip().lower()
@@ -39,7 +43,7 @@ def main():
         # Step 6: Generate report
         c.info(f"\n🧾 Generating {fmt.upper()} report...", bold=True)
         report = ReportManager(cfg["output_dir"], cfg["project_key"], fmt)
-        report.generate(metrics, qg, issues)
+        report.generate(metrics, qg, issues, streamed_csvs)
 
         c.success(f"\n✅ Report successfully saved to: {cfg['output_dir']}")
 
@@ -51,7 +55,6 @@ def main():
         # print a concise error with color; include exception type for debugging
         c.error(f"\n💥 Error: {type(e).__name__}: {e}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

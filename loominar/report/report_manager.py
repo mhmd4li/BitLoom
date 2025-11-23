@@ -9,11 +9,11 @@ class ReportManager:
         self.project_key = project_key
         self.format = fmt.lower()
 
-    def generate(self, metrics, qg, issues):
+    def generate(self, metrics, qg, issues, streamed_csvs=None):
         if self.format == "word":
             WordReport(self.output_dir, self.project_key, self.format).generate(metrics, qg, issues)
         elif self.format == "excel":
-            ExcelReport(self.output_dir, self.project_key, self.format).generate(issues, qg)
+            ExcelReport(self.output_dir, self.project_key, self.format).generate(issues, qg, streamed_csvs)
         elif self.format == "csv":
             CsvReport(self.output_dir, self.project_key, self.format).generate(issues, qg)
         else:

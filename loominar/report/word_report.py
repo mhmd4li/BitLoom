@@ -4,11 +4,20 @@ from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml.shared import OxmlElement, qn
 from datetime import datetime
 from .base_report import BaseReport, SEVERITY_MAP, SEVERITY_COLORS
-from loominar import console as c
+from loominar import console
+
+log = console.get_logger(__name__)
+
+# python-docx holds the whole document tree in memory, so a very large table is
+# what makes Word reports unusable at scale. Beyond this the detail table is
+# truncated and the reader is pointed at Excel.
+MAX_TABLE_ROWS = 10000
+
 
 class WordReport(BaseReport):
     def generate(self, metrics, quality_gate, issues):
-        status = quality_gate.get("status", "Report")
+        issues = issues or []
+        status = (quality_gate or {}).get("status", "Report")
         doc = Document()
 
         # Header
@@ -16,6 +25,14 @@ class WordReport(BaseReport):
         doc.add_paragraph(f"Project: {self.project_key}")
         doc.add_paragraph(f"Quality Gate Status: {status}")
         doc.add_paragraph(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+        # Project metrics — previously passed in and then never rendered.
+        if metrics:
+            doc.add_heading("Project Metrics", level=2)
+            for measure in metrics:
+                name = str(measure.get("metric", "")).replace("_", " ").title()
+                value = measure.get("value", measure.get("periods", ""))
+                doc.add_paragraph(f"  {name}: {value}")
 
         # Summary
         summary = self._build_summary(issues)
@@ -46,7 +63,9 @@ class WordReport(BaseReport):
                 hdr[i].text = col
                 hdr[i].paragraphs[0].runs[0].bold = True
 
-            for i in issues:
+            rendered = issues[:MAX_TABLE_ROWS]
+            log.debug("Writing %s table rows", f"{len(rendered):,}")
+            for i in rendered:
                 row = table.add_row().cells
                 sev = SEVERITY_MAP.get(i.get("severity", ""), i.get("severity", ""))
                 color = SEVERITY_COLORS.get(sev, "FFFFFF")
@@ -62,6 +81,17 @@ class WordReport(BaseReport):
                 shd.set(qn('w:fill'), color)
                 tcPr.append(shd)
 
+            if len(issues) > MAX_TABLE_ROWS:
+                log.warning(
+                    "Word table truncated to %s of %s issues; re-run with -f excel "
+                    "for the complete listing.",
+                    f"{MAX_TABLE_ROWS:,}", f"{len(issues):,}",
+                )
+                doc.add_paragraph(
+                    f"Showing the first {MAX_TABLE_ROWS} of {len(issues)} issues. "
+                    "Re-run with -f excel for the complete listing."
+                )
+
         # Font
         style = doc.styles["Normal"]
         style.font.name = "Calibri"
@@ -75,7 +105,8 @@ class WordReport(BaseReport):
 
         path = self._build_filename(status)
         doc.save(path)
-        c.success(f"✅ Word report saved: {path}")
+        log.success("Word report written: %s (%s issues)", path, f"{len(issues):,}")
+        return path
 
 
 

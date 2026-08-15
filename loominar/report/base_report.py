@@ -1,9 +1,17 @@
 import os
 import platform
+import re
 from loominar import __version__ as LOOMINAR_VERSION
+from loominar import console
 from datetime import datetime
 from collections import Counter
+
+import matplotlib
+# Reports are written headlessly (CI, pipelines) — never try to open a GUI window.
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+log = console.get_logger(__name__)
 
 SEVERITY_MAP = {
     "BLOCKER": "Blocker",
@@ -22,29 +30,37 @@ SEVERITY_COLORS = {
 }
 
 
+FORMAT_EXTENSIONS = {
+    "excel": "xlsx",
+    "word": "docx",
+    "csv": "csv",
+}
+
+# Characters Excel forbids in a sheet name, plus path separators.
+_UNSAFE_FILENAME = re.compile(r"[^A-Za-z0-9._-]+")
+
+
 class BaseReport:
-    def __init__(self, output_dir: str, project_key: str, fmt: str):
+    def __init__(self, output_dir: str, project_key: str, fmt: str, verbosity=None):
         self.output_dir = output_dir
         self.project_key = project_key
         self.format = fmt.lower().strip()
+        if verbosity is not None:
+            console.set_verbosity(verbosity)
         os.makedirs(self.output_dir, exist_ok=True)
-    
+
 #----------------------------------
     def _build_filename(self, status=None):
         timestamp = datetime.now().strftime("%Y-%m-%d_%H%M")
         status_part = f"_{status.upper()}" if status else "_Report"
-        fmt_norm = str(self.format).lower()
-        if fmt_norm == "excel":
-            ext = "xlsx"
-        elif fmt_norm == "word":
-            ext = "docx"
-        elif fmt_norm == "csv":
-            ext = "csv"
+        # Unknown formats previously left `ext` unbound -> UnboundLocalError.
+        ext = FORMAT_EXTENSIONS.get(str(self.format).lower(), "txt")
+        safe_project = _UNSAFE_FILENAME.sub("_", str(self.project_key)) or "report"
         return os.path.join(
             self.output_dir,
-            f"{self.project_key}{status_part}_{timestamp}.{ext}"
+            f"{safe_project}{status_part}_{timestamp}.{ext}"
         )
-    
+
 #----------------------------------
     def _build_summary(self, issues):
         if not issues:
@@ -69,6 +85,7 @@ class BaseReport:
 
         pie_path = os.path.join(self.output_dir, f"{self.project_key}_severity_pie.png")
         bar_path = os.path.join(self.output_dir, f"{self.project_key}_severity_bar.png")
+        log.debug("Rendering severity charts for %d categories", len(labels))
 
         # Pie chart
         plt.figure(figsize=(5, 5))

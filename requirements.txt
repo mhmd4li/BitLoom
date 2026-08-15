@@ -1,18 +1,15 @@
 # -----------------------------
 # Core dependencies
 # -----------------------------
-requests>=2.31.0          # For SonarQube API calls
-pandas>=2.1.1             # For tabular data handling
-matplotlib>=3.8.0         # For charts (pie/bar visuals)
-xlsxwriter>=3.1.2         # For Excel report formatting and charting
-python-docx>=1.1.0        # For generating Word reports
-openpyxl>=3.1.2           # Excel engine for pandas compatibility
+requests>=2.31.0          # SonarQube API calls
+matplotlib>=3.8.0         # Charts (pie/bar visuals) for Word reports
+xlsxwriter>=3.1.2         # Excel writing, formatting and charting
+python-docx>=1.1.0        # Word reports
+colorama>=0.4.6           # Colorized CLI output (imported at startup)
 
-# -----------------------------
-# CLI / Utility dependencies
-# -----------------------------
-colorama>=0.4.6           # For colorful CLI output
-tqdm>=4.66.1              # For progress bars in future CLI improvements
+# pandas/openpyxl were dropped in 0.3.0: reports are now written row-by-row via
+# xlsxwriter's constant_memory mode and the csv module, so a large project no
+# longer needs the whole result set materialised as a DataFrame.
 
 # -----------------------------
 # Packaging & Distribution

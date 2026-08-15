@@ -1,0 +1,19 @@
+# Files included in the source distribution (sdist).
+# The wheel's contents come from [tool.setuptools] packages in pyproject.toml.
+
+include README.md
+include CHANGELOG.md
+include LICENSE.txt
+include RELEASING.md
+include requirements.txt
+include pyproject.toml
+
+# Never ship caches, build leftovers, or local tooling state.
+global-exclude *.py[cod]
+global-exclude __pycache__
+global-exclude .DS_Store
+prune .github
+prune .vscode
+prune .venv
+prune dist
+prune build
